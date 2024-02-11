@@ -1,3 +1,5 @@
+const UserModel = require('./models')
+
 module.exports = class Game {
     constructor(bot, chatId) {
         this.chatId = chatId
@@ -77,6 +79,10 @@ module.exports = class Game {
     }
 
     async _finishGame () {
+        const user = await UserModel.findOne({ chatId: this.chatId })
+        user.allMatches += this.allTry
+        user.right += this.count
+        await user.save()
         this.bot.sendMessage(this.chatId, `The game is over. You have guessed ${this.count} numbers out of ${this.allTry}`)
     }
 }
